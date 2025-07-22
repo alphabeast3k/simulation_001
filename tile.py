@@ -41,6 +41,9 @@ class Tile():
     def get_color(self) -> str:
         return tile_type_map[self.tile_type][TileTypeMapKeys.color]
 
+    def toggle_selection(self):
+        self.selected = not self.selected
+
     def draw(self, screen):
         if self.selected:
             pygame.draw.rect(surface=screen, color="red", rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3) 

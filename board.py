@@ -50,6 +50,6 @@ class Board:
 
 
         if index_x < self.width and index_y < self.width:
-            self.tiles[index_x][index_y].selected = True
+            self.tiles[index_x][index_y].toggle_selection()
         
                 
