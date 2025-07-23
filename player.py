@@ -3,8 +3,9 @@ from game_manager import GameManager
 
 class Player:
 
-    def __init__(self):
+    def __init__(self, base_pos):
         self.selection: Tile = None 
+        self.base_pos = base_pos
 
     def change_selection(self, entity: Tile):
         if self.selection and self.selection != entity:
@@ -15,3 +16,6 @@ class Player:
             self.selection = entity
         else:
             self.selection = None
+    
+    def get_base_pos(self):
+        return self.base_pos

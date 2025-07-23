@@ -7,6 +7,7 @@ class TileType:
     grass       = 1
     path        = 2
     spawn_point = 3
+    base        = 4
 
 class TileTypeMapKeys:
     color="color"
@@ -29,6 +30,10 @@ tile_type_map = {
         TileTypeMapKeys.color: "gray",
         TileTypeMapKeys.buildable: False
     },
+    TileType.base : {
+        TileTypeMapKeys.color: "purple",
+        TileTypeMapKeys.buildable: False
+    }
 
 }
 

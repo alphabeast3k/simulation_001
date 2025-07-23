@@ -23,11 +23,11 @@ clock = pygame.time.Clock()
 running = True
 
 # player will handle all the states related to player 
-player = Player()
+player = Player(base_pos=(14,5))
 game_manager = GameManager()
-enemy_manager = EnemyManager([(0,5)])
+enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
 
-board = Board(width=board_size[0], height=board_size[1], screen=screen)
+board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
 
 def handle_mouse_clicks(event):
     if event.button == 1:
@@ -46,6 +46,7 @@ while running:
    
     # draw entities onto the screen
     board.draw_board(screen)
+    screen.blit(enemy_manager.get_snake_sprite(clock), (32, 32))
 
     pygame.display.flip()
-    # clock.tick(480)  # Limit to 480 frames per second
+    clock.tick(60)  # Limit to 480 frames per second
