@@ -1,6 +1,9 @@
 import pygame
+from pygame.sprite import Sprite
 import os 
 from pygame.time import Clock
+
+enemy_sheet = pygame.image.load(os.path.join("assets", "spritesheet.png"))
 # should manage the enemies and the locations
 # different thing sto consider but necessary now
 # ideally spawn an enemy not sure if that should be handled by the game board but this class should handle smooth motion for the enemy ensuring constant speed
@@ -41,9 +44,80 @@ class EnemyManager:
         return self.snake_frame_sprites[self.img_index]
 
 
-class Enemy: 
-    def __init__(self):
+class EnemyType:
+    normal = 1
+    fast =  2
+    tank = 3
+
+class EnemyDataKeys:
+    sprites = "sprites"
+    health = "health"
+    speed = "speed"
+    damage = "damage"
+
+enemy_data = {
+    EnemyType.normal : {
+        EnemyDataKeys.sprites : [
+            enemy_sheet.subsurface((0,0,16,16)),
+            enemy_sheet.subsurface((16,0,16,16)),
+            enemy_sheet.subsurface((32,0,16,16)),
+            enemy_sheet.subsurface((48,0,16,16))
+        ],
+        EnemyDataKeys.health: 10,
+        EnemyDataKeys.speed: 1, #speed of one means 1 tile every 3 seconds for now may update the definition later 
+        EnemyDataKeys.damage: 1
+    },
+    EnemyType.fast: {
+        EnemyDataKeys.sprites : [
+            enemy_sheet.subsurface((0,0,16,16)),
+            enemy_sheet.subsurface((16,0,16,16)),
+            enemy_sheet.subsurface((32,0,16,16)),
+            enemy_sheet.subsurface((48,0,16,16))
+        ],
+        EnemyDataKeys.health: 10,
+        EnemyDataKeys.speed: 1,
+        EnemyDataKeys.damage: 1
+    },
+    EnemyType.tank : {
+        EnemyDataKeys.sprites : [
+            enemy_sheet.subsurface((0,0,16,16)),
+            enemy_sheet.subsurface((16,0,16,16)),
+            enemy_sheet.subsurface((32,0,16,16)),
+            enemy_sheet.subsurface((48,0,16,16))
+        ],
+        EnemyDataKeys.health: 10,
+        EnemyDataKeys.speed: 1,
+        EnemyDataKeys.damage: 1
+    }
+}
+class Enemy(Sprite): 
+    def __init__(self, enemy_type):
+        Sprite.__init__(self)
+        self.enemy_type = enemy_type
+
+        self.animation_counter = 0
+        self.frame_index = 0
+        self.frames_per_sec = 4
+
+        self.pos = (0,0)
+
+    def move(self):
         pass
+    
+    def draw(self, screen: pygame.surface.Surface):
+        # much cleaner animation and can control the speed much easier 
+        # will like want to change this into a system that can be applied to all animatable entities
+        
+        self.animation_counter += 1
+
+        if self.animation_counter >= 60/self.frames_per_sec:
+            self.animation_counter = 0
+            self.frame_index += 1
+
+            if self.frame_index >= len(enemy_data[self.enemy_type][EnemyDataKeys.sprites]):
+                self.frame_index = 0
+        
+        screen.blit(enemy_data[self.enemy_type][EnemyDataKeys.sprites][self.frame_index], self.pos)
 
 
 # Correct way to do it maybe have a global tracker -> no that doesn't work if there are different animation speeds
@@ -54,4 +128,8 @@ class Enemy:
 
 
 # for mouse inputs might want to draw a small invisible sprite circle and check where the mouse is 
-# have a sprite for each selectable object and select that object depending on sprite layer  
+# have a sprite for each selectable object and select that object depending on sprite layer 
+# 
+# may want a controller that tells every sprite when to next go sprite 
+# global animation speed controller may be nice but would mean that we can't control the animations individually 
+# big thing for the game in the future can be being able to speed up the game 2x 4x 10x 

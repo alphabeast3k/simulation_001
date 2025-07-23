@@ -3,7 +3,7 @@ from tile import Tile
 from board import Board
 from player import Player
 from game_manager import GameManager
-from enemy_manager import EnemyManager
+from enemy_manager import EnemyManager, Enemy, EnemyType
 from tower import TowerType, Tower
 
 
@@ -38,6 +38,8 @@ def handle_mouse_clicks(event):
 screen.fill("white") 
 board.draw_board(screen)
 
+tower = Tower(TowerType.medium_range, (160,160))
+enemy = Enemy(EnemyType.normal)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -49,7 +51,9 @@ while running:
     board.draw_board(screen)
     screen.blit(enemy_manager.get_snake_sprite(clock), (32, 32))
 
-    screen.blit(Tower(TowerType.short_range), (160,160))
+    screen.blit(tower.image, (120,120))
+    enemy.draw(screen)
+    
 
     pygame.display.flip()
     clock.tick(60)  # Limit to 480 frames per second
