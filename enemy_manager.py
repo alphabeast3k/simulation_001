@@ -44,3 +44,14 @@ class EnemyManager:
 class Enemy: 
     def __init__(self):
         pass
+
+
+# Correct way to do it maybe have a global tracker -> no that doesn't work if there are different animation speeds
+# We need to use a sprite might be able to use the update method
+# in the game manager set the animation speed globally 
+# every time a new frame is generated check if enough has passed then get the new one
+# what about the health bar and move ment we'll want a path
+
+
+# for mouse inputs might want to draw a small invisible sprite circle and check where the mouse is 
+# have a sprite for each selectable object and select that object depending on sprite layer  

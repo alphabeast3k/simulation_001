@@ -6,6 +6,7 @@ class Player:
     def __init__(self, base_pos):
         self.selection: Tile = None 
         self.base_pos = base_pos
+        self.towers = []
 
     def change_selection(self, entity: Tile):
         if self.selection and self.selection != entity:

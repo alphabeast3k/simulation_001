@@ -4,6 +4,7 @@ from board import Board
 from player import Player
 from game_manager import GameManager
 from enemy_manager import EnemyManager
+from tower import TowerType, Tower
 
 
 # encapsulate the display dimensions and board size at some point
@@ -47,6 +48,8 @@ while running:
     # draw entities onto the screen
     board.draw_board(screen)
     screen.blit(enemy_manager.get_snake_sprite(clock), (32, 32))
+
+    screen.blit(Tower(TowerType.short_range), (160,160))
 
     pygame.display.flip()
     clock.tick(60)  # Limit to 480 frames per second
