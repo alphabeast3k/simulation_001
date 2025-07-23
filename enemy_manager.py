@@ -9,3 +9,7 @@ class EnemyManager:
     
     def get_spawn_points(self):
         return self.spawn_points
+
+class Enemy: 
+    def __init__(self):
+        pass

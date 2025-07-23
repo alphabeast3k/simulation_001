@@ -1,10 +1,10 @@
 import math
 from tile import Tile
 from tile import TileType
-import pygame
+from enemy_manager import EnemyManager
 
 class Board: 
-    def __init__(self, width, height, screen):
+    def __init__(self, width, height, screen, enemy_manager: EnemyManager):
         max_square_width = math.floor((screen.get_width()/width))
         max_square_height = math.floor((screen.get_height() / height))
 
@@ -24,7 +24,9 @@ class Board:
             new_row_list = []
             for column in range(height):
                 tile = Tile(row * self.square_size, column*self.square_size, self.square_size)
-                if column == 5:
+                if  (row, column) in enemy_manager.get_spawn_points():
+                    tile.update_type(TileType.spawn_point)
+                elif column == 5:
                     tile.update_type(TileType.path)
                 else:
                     tile.update_type(TileType.grass)

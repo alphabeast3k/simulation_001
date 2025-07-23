@@ -3,6 +3,7 @@ from tile import Tile
 from board import Board
 from player import Player
 from game_manager import GameManager
+from enemy_manager import EnemyManager
 
 
 # encapsulate the display dimensions and board size at some point
@@ -20,11 +21,13 @@ clock = pygame.time.Clock()
 # pygame.event.set_allowed([pygame.MOUSEBUTTONDOWN])
 
 running = True
-board = Board(width=board_size[0], height=board_size[1], screen=screen)
+
 # player will handle all the states related to player 
 player = Player()
 game_manager = GameManager()
+enemy_manager = EnemyManager([(0,5)])
 
+board = Board(width=board_size[0], height=board_size[1], screen=screen)
 
 def handle_mouse_clicks(event):
     if event.button == 1:
