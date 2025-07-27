@@ -45,13 +45,13 @@ class Board:
                 tile.draw(screen)
     
     def  on_resize():
-        # in the future will want to recalculate square size and redraw tiles
+        # in the future will want to recalculate tile_size and redraw tiles
         pass
     
     def get_tile_at_pos(self, pos_x, pos_y):
-        # thinking that if we do modulo pos_y withh square_size and floor than we get the tile that is currently at a position
-        index_x = math.floor(pos_x / self.square_size)
-        index_y = math.floor(pos_y / self.square_size)
+        # thinking that if we do modulo pos_y withh tile_size and floor than we get the tile that is currently at a position
+        index_x = math.floor(pos_x / self.tile_size)
+        index_y = math.floor(pos_y / self.tile_size)
 
 
         if index_x < self.width and index_y < self.width:

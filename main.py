@@ -62,4 +62,11 @@ while running:
     
 
     pygame.display.flip()
-    clock.tick(60)  # Limit to 480 frames per second
+    clock.tick(60)  # Limit to 60 frames per second
+
+
+# next steps get the pathfinding for enemies working
+# player select tile and build/remove tower
+# menus for starting, ending and adjusting the game 
+#
+#
