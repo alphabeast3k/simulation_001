@@ -5,6 +5,7 @@ from player import Player
 from game_manager import GameManager
 from enemy_manager import EnemyManager, Enemy, EnemyType
 from tower import TowerType, Tower
+from button import Button
 import math
 
 
@@ -38,6 +39,10 @@ def handle_mouse_clicks(event):
 screen.fill("white") 
 board.draw_board(screen)
 
+button = Button("Start Game", (100, 50), (150, 50))
+
+buttons = [button]
+
 tower = Tower(TowerType.medium_range, (160,160))
 tile_size = board.tile_size
 
@@ -46,15 +51,21 @@ print(spawn_point)
 enemy = Enemy(EnemyType.normal, spawn_point)
 
 
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             handle_mouse_clicks(event)
         if event.type == pygame.QUIT:
             running = False
+
+    for _button in buttons:
+        _button.is_hovered(pygame.mouse.get_pos())
    
     # draw entities onto the screen
     board.draw_board(screen)
+
+    button.draw(screen)
 
     screen.blit(tower.image, (120,120))
     enemy.draw(screen)

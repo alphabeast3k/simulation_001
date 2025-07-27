@@ -20,8 +20,10 @@ class EnemyManager:
     def get_spawn_points(self):
         return self.spawn_points
 
-    def spawn_enemies(self, screen):
-        pass
+    def spawn_enemies(self, screen: pygame.surface.Surface):
+        for spawn_point in self.spawn_points:
+            enemy = Enemy(EnemyType.normal, spawn_point)
+            self.enemies[spawn_point] = enemy
 
 
 class EnemyType:
@@ -70,7 +72,8 @@ enemy_data = {
         EnemyDataKeys.damage: 1
     }
 }
-class Enemy(Sprite): 
+
+class Enemy(Sprite):
     def __init__(self, enemy_type, pos):
         Sprite.__init__(self)
         self.enemy_type = enemy_type
@@ -87,7 +90,8 @@ class Enemy(Sprite):
 
     def move(self, tile_size: int):
         # if we want to move x tiles per second then
-        # what is the destination and how many spaces do we need to move between each 
+        # what is the destination and how many spaces do we need to move between each
+        # if we want to move 1 tile per second then we need to move tile_size pixels every 180 frames
         pixel_per_second = tile_size / 180
         self.true_pos = (self.true_pos[0] + pixel_per_second, self.true_pos[1])
 
