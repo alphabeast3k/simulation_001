@@ -1,14 +1,8 @@
 
 
 class GameManager:
-    def __init__(self):
-        self.should_redraw_board = False
-
-    def toggle_should_redraw_board(self):
-        self.should_redraw_board = not self.should_redraw_board
+    def __init__(self, tile_size):
+        self.tile_size = tile_size
     
-    def set_should_redraw_board(self, flag: bool):
-        self.set_should_redraw_board = flag
-    
-    def get_should_redraw_board(self):
-        return self.should_redraw_board
+    def update_tile_size(self, tile_size):
+        self.tile_size = tile_size

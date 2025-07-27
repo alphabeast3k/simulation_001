@@ -12,7 +12,7 @@ class Board:
         self.width = width
         self.height = height
 
-        self.square_size = min(max_square_height, max_square_width)
+        self.tile_size = min(max_square_height, max_square_width)
         self.tiles = [] 
 
         # find the number of squares on the board 
@@ -24,7 +24,7 @@ class Board:
         for row in range(width):
             new_row_list = []
             for column in range(height):
-                tile = Tile(row * self.square_size, column*self.square_size, self.square_size)
+                tile = Tile(row * self.tile_size, column*self.tile_size, self.tile_size)
                 if  (row, column) in enemy_manager.get_spawn_points():
                     tile.update_type(TileType.spawn_point)
                 elif (row, column) == player.get_base_pos():
@@ -57,6 +57,3 @@ class Board:
         if index_x < self.width and index_y < self.width:
             return self.tiles[index_x][index_y]
 
-
-        
-                

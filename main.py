@@ -5,6 +5,7 @@ from player import Player
 from game_manager import GameManager
 from enemy_manager import EnemyManager, Enemy, EnemyType
 from tower import TowerType, Tower
+import math
 
 
 # encapsulate the display dimensions and board size at some point
@@ -25,7 +26,6 @@ running = True
 
 # player will handle all the states related to player 
 player = Player(base_pos=(14,5))
-game_manager = GameManager()
 enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
 
 board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
@@ -39,7 +39,13 @@ screen.fill("white")
 board.draw_board(screen)
 
 tower = Tower(TowerType.medium_range, (160,160))
-enemy = Enemy(EnemyType.normal)
+tile_size = board.tile_size
+
+spawn_point = ((0 * tile_size) + math.floor(tile_size/2), (tile_size * 5) + math.floor(tile_size/2))
+print(spawn_point)
+enemy = Enemy(EnemyType.normal, spawn_point)
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -49,10 +55,10 @@ while running:
    
     # draw entities onto the screen
     board.draw_board(screen)
-    screen.blit(enemy_manager.get_snake_sprite(clock), (32, 32))
 
     screen.blit(tower.image, (120,120))
     enemy.draw(screen)
+    enemy.move(board.tile_size)
     
 
     pygame.display.flip()

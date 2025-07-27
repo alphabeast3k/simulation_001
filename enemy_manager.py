@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 import os 
 from pygame.time import Clock
+import math 
 
 enemy_sheet = pygame.image.load(os.path.join("assets", "spritesheet.png"))
 # should manage the enemies and the locations
@@ -12,36 +13,15 @@ class EnemyManager:
         # spawn points are indexed by row and column of the tile rather then screen position
         self.spawn_points = spawn_points
         self.enemies = {}
-
-        self.img_index = 0
-        self.animation_counter = 0
-
-        snake_frames = {0: (0,0,16,16),
-                        1: (16,0,16,16),
-                        2: (32,0,16,16),
-                        3: (48,0,16,16)}
         
         #self.snake_img = pygame.image.load(os.path.join("assets","spritesheet.png")).subsurface((0,0,16,16))
         self.snake_frame_sprites = []
-
-        for index in snake_frames.keys():
-            self.snake_frame_sprites.append(pygame.image.load(os.path.join("assets","spritesheet.png")).subsurface(snake_frames[index]))
     
     def get_spawn_points(self):
         return self.spawn_points
 
     def spawn_enemies(self, screen):
         pass
-
-    def get_snake_sprite(self, clock: Clock):
-        self.animation_counter += 1
-        if self.animation_counter == 15:
-            self.animation_counter = 0
-            self.img_index += 1
-            if self.img_index == 4:
-                self.img_index = 0
-        
-        return self.snake_frame_sprites[self.img_index]
 
 
 class EnemyType:
@@ -91,23 +71,32 @@ enemy_data = {
     }
 }
 class Enemy(Sprite): 
-    def __init__(self, enemy_type):
+    def __init__(self, enemy_type, pos):
         Sprite.__init__(self)
         self.enemy_type = enemy_type
 
         self.animation_counter = 0
         self.frame_index = 0
         self.frames_per_sec = 4
+        self.path = []
 
-        self.pos = (0,0)
+        self.pos = pos
+        self.true_pos = pos
 
-    def move(self):
-        pass
+        print(self.pos)
+
+    def move(self, tile_size: int):
+        # if we want to move x tiles per second then
+        # what is the destination and how many spaces do we need to move between each 
+        pixel_per_second = tile_size / 180
+        self.true_pos = (self.true_pos[0] + pixel_per_second, self.true_pos[1])
+
+        self.pos = (math.floor(self.true_pos[0]), math.floor(self.true_pos[1]))
     
     def draw(self, screen: pygame.surface.Surface):
         # much cleaner animation and can control the speed much easier 
         # will like want to change this into a system that can be applied to all animatable entities
-        
+
         self.animation_counter += 1
 
         if self.animation_counter >= 60/self.frames_per_sec:
