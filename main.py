@@ -33,8 +33,15 @@ board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_ma
 
 def handle_mouse_clicks(event):
     if event.button == 1:
-        tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
-        player.change_selection(tile)
+        button_clicked = False
+        for button in buttons:
+            if button.is_clicked(event.pos):
+                button_clicked = True
+                break
+        
+        if not button_clicked:
+            tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
+            player.change_selection(tile)
         
 screen.fill("white") 
 board.draw_board(screen)
@@ -60,7 +67,7 @@ while running:
             running = False
 
     for _button in buttons:
-        _button.is_hovered(pygame.mouse.get_pos())
+        _button.hover_loop(pygame.mouse.get_pos())
    
     # draw entities onto the screen
     board.draw_board(screen)
