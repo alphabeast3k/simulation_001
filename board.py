@@ -20,7 +20,7 @@ class Board:
         # 1280 / 10 -> 128 * 128 pixels
         # 720 / 10 -> 72 * 72  pixels 
         # whichever is greater 
-        # draw rects
+        # draw rects/tiles/sprites
         for row in range(width):
             new_row_list = []
             for column in range(height):

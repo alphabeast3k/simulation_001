@@ -1,7 +1,9 @@
 import pygame
-from entity import Entity
-from enum import Enum
 import os
+from enum import Enum
+from tower import Tower, TowerType
+from pygame.event import Event, EventType
+
 
 class TileType(Enum):
     blank       = 0
@@ -9,6 +11,7 @@ class TileType(Enum):
     path        = 2
     spawn_point = 3
     base        = 4
+    water       = 5
 
 #in the future will want to addd more variations for if the tile is next to another
 # for example if the tile is next to a path tile then it will have a different sprite
@@ -56,6 +59,8 @@ class Tile:
         self.size = size
         self.image = tile_type_map[self.tile_type][TileTypeMapKeys.img]
 
+        self.built = None
+
     def update_type(self, tile_type):
         self.tile_type = tile_type
         self.image = tile_type_map[self.tile_type][TileTypeMapKeys.img]
@@ -64,13 +69,14 @@ class Tile:
     def get_color(self) -> str:
         return tile_type_map[self.tile_type][TileTypeMapKeys.color]
     
-    def toggle_selection(self) -> bool:
+    def toggle_selection(self, screen) -> bool:
         self.selected = not self.selected
         return self.selected
 
     def draw(self, screen):
         if self.selected:
-            pygame.draw.rect(surface=screen, color="red", rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3) 
+            pygame.draw.rect(surface=screen, color="red", rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3)
+            self.build_tower() # Debug
         else:
             if self.image:
                 # draw the image on the screen
@@ -79,5 +85,20 @@ class Tile:
                 print(self.image)
                 # draw a rectangle with the color of the tile
                 pygame.draw.rect(surface=screen, color=self.get_color(), rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3)
-
-      
+            
+            self.built = None # Debug
+        
+        if self.built:
+            print("should be drawing")
+            self.draw_tower(screen)
+        
+    
+    def draw_tower(self, screen):
+        self.built.draw(screen)
+    
+    def build_tower(self):
+        self.built =  Tower(TowerType.medium_range, (self.x_pos + (self.size/2), self.y_pos + (self.size/2)))
+        
+        # event = Event(pygame.event.custom_type, {"drawable": obj_tower})
+        # pygame.event.post(obj_tower)               
+        pass

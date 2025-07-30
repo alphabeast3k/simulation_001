@@ -6,6 +6,7 @@ from game_manager import GameManager
 from enemy_manager import EnemyManager, Enemy, EnemyType
 from tower import TowerType, Tower
 from button import Button
+from data_card import DataCard
 import math
 
 
@@ -30,18 +31,6 @@ player = Player(base_pos=(14,5))
 enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
 
 board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
-
-def handle_mouse_clicks(event):
-    if event.button == 1:
-        button_clicked = False
-        for button in buttons:
-            if button.is_clicked(event.pos):
-                button_clicked = True
-                break
-        
-        if not button_clicked:
-            tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
-            player.change_selection(tile)
         
 screen.fill("white") 
 board.draw_board(screen)
@@ -54,10 +43,30 @@ tower = Tower(TowerType.medium_range, (160,160))
 tile_size = board.tile_size
 
 spawn_point = ((0 * tile_size) + math.floor(tile_size/2), (tile_size * 5) + math.floor(tile_size/2))
-print(spawn_point)
 enemy = Enemy(EnemyType.normal, spawn_point)
 
+data_card_obj = DataCard((1090, 0), (150, 250))
 
+#ui elements we always want drawn last so they appear on top
+ui_draw_list = [data_card_obj]
+# towers need to be drawn after the tiles and can also be used to check if they are being clicked
+tower_draw_list = []
+
+def handle_mouse_clicks(event):
+    if event.button == 1:
+        button_clicked = False
+        for button in buttons:
+            if button.is_clicked(event.pos):
+                button_clicked = True
+                break
+        
+        if not button_clicked:
+            tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
+            if not tile:
+                return
+            data_vis = player.change_selection(screen,tile)
+
+            data_card_obj.set_visible(data_vis)
 
 while running:
     for event in pygame.event.get():
@@ -77,6 +86,9 @@ while running:
     screen.blit(tower.image, (120,120))
     enemy.draw(screen)
     enemy.move(board.tile_size)
+
+    for drawable in ui_draw_list:
+        drawable.draw(screen)
     
 
     pygame.display.flip()
@@ -86,5 +98,3 @@ while running:
 # next steps get the pathfinding for enemies working
 # player select tile and build/remove tower
 # menus for starting, ending and adjusting the game 
-#
-#

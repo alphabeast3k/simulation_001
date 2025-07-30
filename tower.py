@@ -38,6 +38,11 @@ class Tower(pygame.sprite.Sprite):
     def __init__(self, tower_type: int, pos: tuple):
         Sprite.__init__(self)
         self.image = tower_data[tower_type][TowerDataKeys.sprite]
-        self.rect = self.image.get_rect()
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
+        # self.rect = self.image.get_rect()
+        # self.rect.x = pos[0]
+        # self.rect.y = pos[1]
+        self.pos = pos
+    
+
+    def draw(self, screen):
+        screen.blit(self.image, self.pos)

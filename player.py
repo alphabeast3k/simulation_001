@@ -1,5 +1,6 @@
 from tile import Tile
 from game_manager import GameManager
+from data_card import DataCard
 
 class Player:
 
@@ -8,15 +9,17 @@ class Player:
         self.base_pos = base_pos
         self.towers = []
 
-    def change_selection(self, entity: Tile):
+    def change_selection(self, screen, entity: Tile):
         if self.selection and self.selection != entity:
-            self.selection.toggle_selection()
+            self.selection.toggle_selection(screen)
         
-        selected: bool = entity.toggle_selection()
+        selected : bool = entity.toggle_selection(screen)
         if selected:
             self.selection = entity
+            return True
         else:
             self.selection = None
+            return False
     
     def get_base_pos(self):
         return self.base_pos
