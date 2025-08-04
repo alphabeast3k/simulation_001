@@ -30,25 +30,38 @@ running = True
 
 # player will handle all the states related to player 
 player = Player(base_pos=(14,5))
-enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
+board = Board(width=board_size[0], height=board_size[1], screen=screen, spawn_point=(0,5), player=player)
 
-
-build_button = Button("build", (1110, 200), (100, 40), player.build_tower)
-board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
+enemy_manager = EnemyManager(board=board, player=player)
         
 screen.fill("white") 
 
 tile_size = board.tile_size
 
 spawn_point = ((0 * tile_size) + math.floor(tile_size/2), (tile_size * 5) + math.floor(tile_size/2))
-enemy = Enemy(EnemyType.normal, spawn_point)
+
 
 data_card_obj = DataCard((1090, 0), (150, 250))
 
+
+build_button = Button("build", (1110, 200), (100, 40), player.build_tower)
+spawn_button = Button("spawn", (1110, 300), (100, 40), enemy_manager.spawn_enemies)
+
+
 #ui elements we always want drawn last so they appear on top
-ui_draw_list = [data_card_obj, build_button]
+ui_draw_list = [data_card_obj, build_button, spawn_button]
 # towers need to be drawn after the tiles and can also be used to check if they are being clicked
 tower_draw_list = []
+
+def render_health():
+    font = pygame.font.Font(None, 36)
+    health_text = font.render(f'Health: {player.health}', True, (0,0,0))
+    screen.blit(health_text, (1110, 600))  
+
+def render_currency():
+    font = pygame.font.Font(None, 36)
+    health_text = font.render(f'Money: {player.bank}', True, (0,0,0))
+    screen.blit(health_text, (1110, 650))  
 
 def before_gui(): #add here the things to do each frame before blitting gui elements
     screen.fill((250,)*3)
@@ -71,12 +84,18 @@ def handle_mouse_clicks(event):
 
             data_card_obj.set_visible(data_vis)
 
+# actions we want to check on every frame
 def enemy_loop():
-    pass
+    enemy_manager.update_enemies(tile_size=tile_size, screen=screen)
 
 def tower_loop():
     pass
 
+def player_loop():
+    render_health()
+    render_currency()
+
+enemy_manager.spawn_enemies()
 
 while running:
     events = pygame.event.get()
@@ -93,9 +112,9 @@ while running:
     # draw entities onto the screen
     board.draw_board(screen)
 
-    enemy.draw(screen)
-    enemy.move(board.tile_size)
 
+    enemy_loop()
+    player_loop()
     for drawable in ui_draw_list:
         drawable.draw(screen)
     

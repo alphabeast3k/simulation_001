@@ -1,29 +1,34 @@
 import pygame
 from pygame.sprite import Sprite
 import os 
-from pygame.time import Clock
 import math 
+
+# internal game scripts and linraries 
+from board import Board
+from player import Player
 
 enemy_sheet = pygame.image.load(os.path.join("assets", "spritesheet.png"))
 # should manage the enemies and the locations
 # different thing sto consider but necessary now
 # ideally spawn an enemy not sure if that should be handled by the game board but this class should handle smooth motion for the enemy ensuring constant speed
 class EnemyManager:
-    def __init__(self, spawn_points: list[tuple], clock : Clock):
+    def __init__(self, player: Player, board: Board):
         # spawn points are indexed by row and column of the tile rather then screen position
-        self.spawn_points = spawn_points
-        self.enemies = {}
-        
-        #self.snake_img = pygame.image.load(os.path.join("assets","spritesheet.png")).subsurface((0,0,16,16))
-        self.snake_frame_sprites = []
+        self.base_pos: tuple[int, int] = player.get_base_pos()
+        self.enemies: list[Enemy] = []
+        self.board: Board = board
     
     def get_spawn_points(self):
-        return self.spawn_points
+        return self.spawn_point
 
-    def spawn_enemies(self, screen: pygame.surface.Surface):
-        for spawn_point in self.spawn_points:
-            enemy = Enemy(EnemyType.normal, spawn_point)
-            self.enemies[spawn_point] = enemy
+    def spawn_enemies(self):
+        enemy = Enemy(EnemyType.normal, self.board.get_tile_at_index(self.board.spawn_point).get_center())
+        self.enemies.append(enemy)
+    
+    def update_enemies(self, tile_size, screen):
+        for enemy in self.enemies:
+            enemy.move(tile_size=tile_size)
+            enemy.draw(screen=screen)
 
 
 class EnemyType:
@@ -85,8 +90,6 @@ class Enemy(Sprite):
 
         self.pos = pos
         self.true_pos = pos
-
-        print(self.pos)
 
     def move(self, tile_size: int):
         # if we want to move x tiles per second then

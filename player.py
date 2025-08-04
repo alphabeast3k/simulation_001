@@ -4,9 +4,11 @@ from tower import TowerType
 class Player:
 
     def __init__(self, base_pos):
-        self.selection: Tile = None 
-        self.bank = 0 #store the amount of ccurrency the player has accumulated
+        self.selection: Tile = None
+        self.starting_currency = 10
+        self.bank = 0 + self.starting_currency #store the amount of ccurrency the player has accumulated
         self.base_pos = base_pos
+        self.health = 10
 
     def change_selection(self, screen, entity: Tile):
         if self.selection and self.selection != entity:
@@ -33,6 +35,5 @@ class Player:
             return True
 
     def build_tower(self):
-        print("building")
         if self.selection:
             self.selection.build_tower()

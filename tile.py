@@ -1,5 +1,6 @@
 import pygame
 import os
+import math
 from enum import Enum
 from tower import Tower, TowerType
 from pygame.event import Event, EventType
@@ -98,3 +99,10 @@ class Tile:
         # event = Event(pygame.event.custom_type, {"drawable": obj_tower})
         # pygame.event.post(obj_tower)               
         pass
+
+    def get_center(self):
+        return (math.floor((self.x_pos + (self.size/2))),math.floor(self.y_pos + (self.size/2)))
+
+    def update(self, enemies):
+        self.tower.update(enemies)
+
