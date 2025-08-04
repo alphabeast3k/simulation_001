@@ -18,6 +18,9 @@ class Button:
     
     def set_image(self, image):
         self.active_img = image
+    
+    def clickable(self):
+        return True
 
     def draw(self, screen):
         # Draw the button on the screen # Scale the image to fit the button size

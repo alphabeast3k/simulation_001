@@ -15,7 +15,6 @@ display_width = 1280
 display_height = 720
 
 board_size = (15,10) # 10x10 board
-active_selection = []
 
 pygame.init()
 screen = pygame.display.set_mode((display_width, display_height))
@@ -33,16 +32,12 @@ running = True
 player = Player(base_pos=(14,5))
 enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
 
+
+build_button = Button("build", (1110, 200), (100, 40), player.build_tower)
 board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
         
 screen.fill("white") 
 
-# tp button
-my_button = tp.Button("Hello, world.\nThis button uses the default theme.")
-my_ui_elements = tp.Group([my_button])
-updater = my_ui_elements.get_updater() 
-
-tower = Tower(TowerType.medium_range, (160,160))
 tile_size = board.tile_size
 
 spawn_point = ((0 * tile_size) + math.floor(tile_size/2), (tile_size * 5) + math.floor(tile_size/2))
@@ -51,7 +46,7 @@ enemy = Enemy(EnemyType.normal, spawn_point)
 data_card_obj = DataCard((1090, 0), (150, 250))
 
 #ui elements we always want drawn last so they appear on top
-ui_draw_list = [data_card_obj]
+ui_draw_list = [data_card_obj, build_button]
 # towers need to be drawn after the tiles and can also be used to check if they are being clicked
 tower_draw_list = []
 
@@ -60,16 +55,27 @@ def before_gui(): #add here the things to do each frame before blitting gui elem
 
 def handle_mouse_clicks(event):
     if event.button == 1:
+        mouse_pos = (event.pos[0],event.pos[1])
         button_clicked = False
+
+        for element in ui_draw_list:
+            if element.clickable():
+                if element.is_clicked(mouse_pos):
+                    element.click()
         
         if not button_clicked:
-            tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
+            tile : Tile = board.get_tile_at_pos(mouse_pos)
             if not tile:
                 return
             data_vis = player.change_selection(screen,tile)
 
             data_card_obj.set_visible(data_vis)
 
+def enemy_loop():
+    pass
+
+def tower_loop():
+    pass
 
 
 while running:
@@ -87,16 +93,12 @@ while running:
     # draw entities onto the screen
     board.draw_board(screen)
 
-    screen.blit(tower.image, (120,120))
     enemy.draw(screen)
     enemy.move(board.tile_size)
 
     for drawable in ui_draw_list:
         drawable.draw(screen)
     
-
-    updater.update(events=events,
-                   mouse_rel=mouse_rel)
     pygame.display.flip()
     clock.tick(60)  # Limit to 60 frames per second
 

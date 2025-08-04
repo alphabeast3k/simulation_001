@@ -1,6 +1,5 @@
 from tile import Tile
-from game_manager import GameManager
-from data_card import DataCard
+from tower import TowerType
 
 class Player:
 
@@ -8,14 +7,13 @@ class Player:
         self.selection: Tile = None 
         self.bank = 0 #store the amount of ccurrency the player has accumulated
         self.base_pos = base_pos
-        self.towers = []
 
     def change_selection(self, screen, entity: Tile):
         if self.selection and self.selection != entity:
             self.selection.toggle_selection(screen)
         
         selected : bool = entity.toggle_selection(screen)
-        
+
         if selected:
             self.selection = entity
             return True
@@ -33,3 +31,8 @@ class Player:
         else:
             self.bank += amount
             return True
+
+    def build_tower(self):
+        print("building")
+        if self.selection:
+            self.selection.build_tower()

@@ -59,7 +59,7 @@ class Tile:
         self.size = size
         self.image = tile_type_map[self.tile_type][TileTypeMapKeys.img]
 
-        self.built = None
+        self.tower = None
 
     def update_type(self, tile_type):
         self.tile_type = tile_type
@@ -76,7 +76,6 @@ class Tile:
     def draw(self, screen):
         if self.selected:
             pygame.draw.rect(surface=screen, color="red", rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3)
-            self.build_tower() # Debug
         else:
             if self.image:
                 # draw the image on the screen
@@ -85,18 +84,16 @@ class Tile:
                 print(self.image)
                 # draw a rectangle with the color of the tile
                 pygame.draw.rect(surface=screen, color=self.get_color(), rect=(self.x_pos, self.y_pos, self.size, self.size),border_radius=3)
-            
-            self.built = None # Debug
         
-        if self.built:
+        if self.tower:
             self.draw_tower(screen)
         
     
     def draw_tower(self, screen):
-        self.built.draw(screen)
+        self.tower.draw(screen)
     
     def build_tower(self):
-        self.built =  Tower(TowerType.medium_range, (self.x_pos + (self.size/2), self.y_pos + (self.size/2)))
+        self.tower =  Tower(TowerType.medium_range, (self.x_pos + (self.size/2), self.y_pos + (self.size/2)))
         
         # event = Event(pygame.event.custom_type, {"drawable": obj_tower})
         # pygame.event.post(obj_tower)               

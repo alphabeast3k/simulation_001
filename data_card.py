@@ -11,14 +11,17 @@ import pygame
 # so we'll never have more than one thing selected so instead of recreating it each time why not set to invisible and make visible and pass the info needed instead
 
 class DataCard:
-    def __init__(self, pos, size):
+    def __init__(self, pos, size, boarder=4):
         self.pos = pos
         self.size = size
-        self.boarder = 4
+        self.boarder = boarder
         self.visible = False
 
     def set_visible(self, val):
         self.visible = val
+
+    def clickable(self):
+        return False
 
     def draw(self, screen):
         if not self.visible:

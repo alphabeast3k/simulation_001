@@ -48,10 +48,10 @@ class Board:
         # in the future will want to recalculate tile_size and redraw tiles
         pass
     
-    def get_tile_at_pos(self, pos_x, pos_y):
+    def get_tile_at_pos(self, pos):
         # thinking that if we do modulo pos_y withh tile_size and floor than we get the tile that is currently at a position
-        index_x = math.floor(pos_x / self.tile_size)
-        index_y = math.floor(pos_y / self.tile_size)
+        index_x = math.floor(pos[0] / self.tile_size)
+        index_y = math.floor(pos[1] / self.tile_size)
 
 
         if index_x < self.width and index_y < self.width:
