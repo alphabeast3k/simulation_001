@@ -1,6 +1,7 @@
 from pygame.sprite import Sprite
 import pygame
-import os 
+import os
+import math
 
 class TowerType:
     short_range =  1
@@ -38,11 +39,25 @@ class Tower(pygame.sprite.Sprite):
     def __init__(self, tower_type: int, pos: tuple):
         Sprite.__init__(self)
         self.image = tower_data[tower_type][TowerDataKeys.sprite]
-        # self.rect = self.image.get_rect()
-        # self.rect.x = pos[0]
-        # self.rect.y = pos[1]
         self.pos = pos
+        self.tower_type = tower_type
     
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)
+    
+    def update(self, enemies):
+        pass
+
+    def attack(self,enemies):
+        for enemy in enemies:
+            if self.in_range(enemy.true_pos):
+                pass
+
+    def in_range(self, target_pos: tuple) -> bool:
+        a_squared = (self.pos[0] - target_pos[0])**2
+        b_squared = (self.pos[1] - target_pos[1])**2
+
+        pythagorean_distance = math.sqrt(a_squared + b_squared)
+
+        return pythagorean_distance <= tower_data[self.tower_type][TowerDataKeys.range]
