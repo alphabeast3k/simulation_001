@@ -89,7 +89,7 @@ def enemy_loop():
     enemy_manager.update_enemies(tile_size=tile_size, screen=screen)
 
 def tower_loop():
-    pass
+    board.update_tiles(enemy_manager.enemies)
 
 def player_loop():
     render_health()
@@ -114,7 +114,9 @@ while running:
 
 
     enemy_loop()
+    tower_loop()
     player_loop()
+    
     for drawable in ui_draw_list:
         drawable.draw(screen)
     

@@ -96,6 +96,7 @@ class Tile:
     def build_tower(self):
         self.tower =  Tower(TowerType.medium_range, (self.x_pos + (self.size/2), self.y_pos + (self.size/2)))
         
+        # here as an example event if needed
         # event = Event(pygame.event.custom_type, {"drawable": obj_tower})
         # pygame.event.post(obj_tower)               
         pass
@@ -104,5 +105,6 @@ class Tile:
         return (math.floor((self.x_pos + (self.size/2))),math.floor(self.y_pos + (self.size/2)))
 
     def update(self, enemies):
-        self.tower.update(enemies)
+        if self.tower:
+            self.tower.update(enemies, self.size)
 

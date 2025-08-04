@@ -2,7 +2,6 @@ from tile import Tile
 from tower import TowerType
 
 class Player:
-
     def __init__(self, base_pos):
         self.selection: Tile = None
         self.starting_currency = 10

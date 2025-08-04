@@ -26,9 +26,13 @@ class EnemyManager:
         self.enemies.append(enemy)
     
     def update_enemies(self, tile_size, screen):
-        for enemy in self.enemies:
+        for enemy in self.enemies:        
             enemy.move(tile_size=tile_size)
             enemy.draw(screen=screen)
+            
+            if enemy.health <= 0: 
+                self.enemies.remove(enemy)
+                
 
 
 class EnemyType:
@@ -90,6 +94,7 @@ class Enemy(Sprite):
 
         self.pos = pos
         self.true_pos = pos
+        self.health = enemy_data[enemy_type][EnemyDataKeys.health]
 
     def move(self, tile_size: int):
         # if we want to move x tiles per second then
@@ -114,6 +119,11 @@ class Enemy(Sprite):
                 self.frame_index = 0
         
         screen.blit(enemy_data[self.enemy_type][EnemyDataKeys.sprites][self.frame_index], self.pos)
+    
+    def take_damage(self, dmg):
+        print("hit")
+        self.health -= dmg 
+        print(f'health: {self.health}')
 
 
 # Correct way to do it maybe have a global tracker -> no that doesn't work if there are different animation speeds

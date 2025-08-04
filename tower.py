@@ -41,23 +41,24 @@ class Tower(pygame.sprite.Sprite):
         self.image = tower_data[tower_type][TowerDataKeys.sprite]
         self.pos = pos
         self.tower_type = tower_type
+        self.damage = tower_data[tower_type][TowerDataKeys.damage]
     
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)
     
-    def update(self, enemies):
-        pass
+    def update(self, enemies, tile_size):
+        self.attack(enemies, tile_size=tile_size)
 
-    def attack(self,enemies):
+    def attack(self,enemies,tile_size):
         for enemy in enemies:
-            if self.in_range(enemy.true_pos):
-                pass
+            if self.in_range(enemy.true_pos, tile_size) and enemy.health > 0:
+                enemy.take_damage(self.damage)
 
-    def in_range(self, target_pos: tuple) -> bool:
+    def in_range(self, target_pos: tuple, tile_size: int) -> bool:
         a_squared = (self.pos[0] - target_pos[0])**2
         b_squared = (self.pos[1] - target_pos[1])**2
 
         pythagorean_distance = math.sqrt(a_squared + b_squared)
 
-        return pythagorean_distance <= tower_data[self.tower_type][TowerDataKeys.range]
+        return pythagorean_distance <= tower_data[self.tower_type][TowerDataKeys.range] * tile_size
