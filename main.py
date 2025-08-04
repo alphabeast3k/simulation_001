@@ -2,11 +2,11 @@ import pygame
 from tile import Tile
 from board import Board
 from player import Player
-from game_manager import GameManager
 from enemy_manager import EnemyManager, Enemy, EnemyType
 from tower import TowerType, Tower
 from button import Button
 from data_card import DataCard
+import thorpy as tp 
 import math
 
 
@@ -21,6 +21,9 @@ pygame.init()
 screen = pygame.display.set_mode((display_width, display_height))
 clock = pygame.time.Clock()
 
+# ui stuff maybe
+tp.init(screen=screen, theme=tp.theme_human) 
+
 # allow specific events
 # pygame.event.set_allowed([pygame.MOUSEBUTTONDOWN])
 
@@ -33,11 +36,11 @@ enemy_manager = EnemyManager(spawn_points=[(0,5)], clock=clock)
 board = Board(width=board_size[0], height=board_size[1], screen=screen, enemy_manager=enemy_manager, player=player)
         
 screen.fill("white") 
-board.draw_board(screen)
 
-button = Button("Start Game", (100, 50), (150, 50))
-
-buttons = [button]
+# tp button
+my_button = tp.Button("Hello, world.\nThis button uses the default theme.")
+my_ui_elements = tp.Group([my_button])
+updater = my_ui_elements.get_updater() 
 
 tower = Tower(TowerType.medium_range, (160,160))
 tile_size = board.tile_size
@@ -52,13 +55,12 @@ ui_draw_list = [data_card_obj]
 # towers need to be drawn after the tiles and can also be used to check if they are being clicked
 tower_draw_list = []
 
+def before_gui(): #add here the things to do each frame before blitting gui elements
+    screen.fill((250,)*3)
+
 def handle_mouse_clicks(event):
     if event.button == 1:
         button_clicked = False
-        for button in buttons:
-            if button.is_clicked(event.pos):
-                button_clicked = True
-                break
         
         if not button_clicked:
             tile : Tile = board.get_tile_at_pos(event.pos[0],event.pos[1])
@@ -68,20 +70,22 @@ def handle_mouse_clicks(event):
 
             data_card_obj.set_visible(data_vis)
 
+
+
 while running:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    mouse_rel = pygame.mouse.get_rel()
+
+    for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             handle_mouse_clicks(event)
         if event.type == pygame.QUIT:
             running = False
-
-    for _button in buttons:
-        _button.hover_loop(pygame.mouse.get_pos())
    
+    # effectively clear the screen 
+    screen.fill("white") 
     # draw entities onto the screen
     board.draw_board(screen)
-
-    button.draw(screen)
 
     screen.blit(tower.image, (120,120))
     enemy.draw(screen)
@@ -91,6 +95,8 @@ while running:
         drawable.draw(screen)
     
 
+    updater.update(events=events,
+                   mouse_rel=mouse_rel)
     pygame.display.flip()
     clock.tick(60)  # Limit to 60 frames per second
 

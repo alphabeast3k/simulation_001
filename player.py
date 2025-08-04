@@ -6,6 +6,7 @@ class Player:
 
     def __init__(self, base_pos):
         self.selection: Tile = None 
+        self.bank = 0 #store the amount of ccurrency the player has accumulated
         self.base_pos = base_pos
         self.towers = []
 
@@ -14,6 +15,7 @@ class Player:
             self.selection.toggle_selection(screen)
         
         selected : bool = entity.toggle_selection(screen)
+        
         if selected:
             self.selection = entity
             return True
@@ -23,3 +25,11 @@ class Player:
     
     def get_base_pos(self):
         return self.base_pos
+
+    def update_bank(self, amount) -> bool:
+        # checks if bank will be less then 0 if so return false/invalid operation 
+        if self.bank + amount < 0:
+            return False
+        else:
+            self.bank += amount
+            return True

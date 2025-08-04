@@ -89,7 +89,6 @@ class Tile:
             self.built = None # Debug
         
         if self.built:
-            print("should be drawing")
             self.draw_tower(screen)
         
     
