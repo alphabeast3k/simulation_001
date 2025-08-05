@@ -13,25 +13,29 @@ class TowerDataKeys:
     range = "range"
     damage = "damage"
     cost = "cost"
+    fire_rate = "fire_rate" # firing times per second
 
 tower_data = {
     TowerType.short_range: {
         TowerDataKeys.sprite : pygame.image.load(os.path.join("assets", "spritesheet.png")).subsurface((0,208, 16,16)),
         TowerDataKeys.range : 2,
         TowerDataKeys.damage: 1,
-        TowerDataKeys.cost: 1
+        TowerDataKeys.cost: 1,
+        TowerDataKeys.fire_rate: 3
     },
     TowerType.medium_range: {
         TowerDataKeys.sprite : pygame.image.load(os.path.join("assets", "spritesheet.png")).subsurface((128,208, 16,16)),
         TowerDataKeys.range : 4,
         TowerDataKeys.damage: 1,
-        TowerDataKeys.cost: 1
+        TowerDataKeys.cost: 1,
+        TowerDataKeys.fire_rate: 3
     },
     TowerType.long_range: {
         TowerDataKeys.sprite : pygame.image.load(os.path.join("assets", "spritesheet.png")).subsurface((0,208, 16,16)),
         TowerDataKeys.range : 6,
         TowerDataKeys.damage: 1,
-        TowerDataKeys.cost: 1
+        TowerDataKeys.cost: 1,
+        TowerDataKeys.fire_rate: 3
     },
 }
 
@@ -42,6 +46,10 @@ class Tower(pygame.sprite.Sprite):
         self.pos = pos
         self.tower_type = tower_type
         self.damage = tower_data[tower_type][TowerDataKeys.damage]
+        self.fire_rate = tower_data[tower_type][TowerDataKeys.fire_rate]
+
+        self.ticks_to_fire = 60 / self.fire_rate
+        self.original_ticks_to_fire = self.ticks_to_fire
     
 
     def draw(self, screen):
@@ -51,9 +59,13 @@ class Tower(pygame.sprite.Sprite):
         self.attack(enemies, tile_size=tile_size)
 
     def attack(self,enemies,tile_size):
+        attacked_already = False
+        should_fire = self.should_fire()
+        
         for enemy in enemies:
-            if self.in_range(enemy.true_pos, tile_size) and enemy.health > 0:
+            if self.in_range(enemy.true_pos, tile_size) and enemy.health > 0 and not attacked_already and should_fire:
                 enemy.take_damage(self.damage)
+                attacked_already = True
 
     def in_range(self, target_pos: tuple, tile_size: int) -> bool:
         a_squared = (self.pos[0] - target_pos[0])**2
@@ -62,3 +74,12 @@ class Tower(pygame.sprite.Sprite):
         pythagorean_distance = math.sqrt(a_squared + b_squared)
 
         return pythagorean_distance <= tower_data[self.tower_type][TowerDataKeys.range] * tile_size
+
+    def should_fire(self):
+        self.ticks_to_fire -= 1
+
+        if self.ticks_to_fire == 0:
+            self.ticks_to_fire = self.original_ticks_to_fire
+            return True
+
+        return False
