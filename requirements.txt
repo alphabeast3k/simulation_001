@@ -1,0 +1,9 @@
+iniconfig==2.1.0
+numpy==2.3.2
+packaging==25.0
+pillow==11.3.0
+pluggy==1.6.0
+pygame==2.6.1
+Pygments==2.19.2
+pytest==8.4.1
+thorpy==2.1.11

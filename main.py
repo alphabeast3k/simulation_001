@@ -8,8 +8,6 @@ from screen_manager import ScreenManager
 from button import Button
 from data_card import DataCard
 import thorpy as tp 
-import math
-
 
 # encapsulate the display dimensions and board size at some point
 display_width = 1280
@@ -39,7 +37,7 @@ data_card_obj = DataCard((1090, 0), (150, 250))
 
 
 build_button = Button("build", (1110, 200), (100, 40), player.build_tower)
-spawn_button = Button("spawn", (1110, 300), (100, 40), enemy_manager.spawn_enemies)
+spawn_button = Button("spawn", (1110, 300), (100, 40), enemy_manager.spawn_enemies_debug)
 
 
 #ui elements we always want drawn last so they appear on top

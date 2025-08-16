@@ -22,7 +22,7 @@ class EnemyManager:
     def get_spawn_points(self):
         return self.spawn_point
 
-    def spawn_enemies(self):
+    def spawn_enemies_debug(self):
         enemy = Enemy(EnemyType.normal, self.board.get_tile_at_index(self.board.spawn_point).get_center())
         self.enemies.append(enemy)
     
