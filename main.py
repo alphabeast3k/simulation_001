@@ -2,8 +2,9 @@ import pygame
 from tile import Tile
 from board import Board
 from player import Player
-from enemy_manager import EnemyManager, Enemy, EnemyType
-from tower import TowerType, Tower
+from enemy_manager import EnemyManager
+from you_lose_toast import YouLoseToast
+from screen_manager import ScreenManager
 from button import Button
 from data_card import DataCard
 import thorpy as tp 
@@ -20,12 +21,7 @@ pygame.init()
 screen = pygame.display.set_mode((display_width, display_height))
 clock = pygame.time.Clock()
 
-# ui stuff maybe
 tp.init(screen=screen, theme=tp.theme_human) 
-
-# allow specific events
-# pygame.event.set_allowed([pygame.MOUSEBUTTONDOWN])
-
 running = True
 
 # player will handle all the states related to player 
@@ -37,8 +33,6 @@ enemy_manager = EnemyManager(board=board, player=player)
 screen.fill("white") 
 
 tile_size = board.tile_size
-
-spawn_point = ((0 * tile_size) + math.floor(tile_size/2), (tile_size * 5) + math.floor(tile_size/2))
 
 
 data_card_obj = DataCard((1090, 0), (150, 250))
@@ -52,6 +46,8 @@ spawn_button = Button("spawn", (1110, 300), (100, 40), enemy_manager.spawn_enemi
 ui_draw_list = [data_card_obj, build_button, spawn_button]
 # towers need to be drawn after the tiles and can also be used to check if they are being clicked
 tower_draw_list = []
+
+you_lose_toast: YouLoseToast = YouLoseToast(screen)
 
 def render_health():
     font = pygame.font.Font(None, 36)
@@ -84,42 +80,29 @@ def handle_mouse_clicks(event):
 
             data_card_obj.set_visible(data_vis)
 
-# actions we want to check on every frame
-def enemy_loop():
-    enemy_manager.update_enemies(tile_size=tile_size, screen=screen)
-
-def tower_loop():
-    board.update_tiles(enemy_manager.enemies)
-
-def player_loop():
-    render_health()
-    render_currency()
-
-enemy_manager.spawn_enemies()
+screen_manager = ScreenManager(
+    screen=screen,
+    display_size=(display_width, display_height),
+    board=board,
+    enemy_manager=enemy_manager,
+    player=player,
+    ui_draw_list=ui_draw_list,
+    handle_mouse_clicks_fn=handle_mouse_clicks,
+    render_health_fn=render_health,
+    render_currency_fn=render_currency,
+)
 
 while running:
     events = pygame.event.get()
     mouse_rel = pygame.mouse.get_rel()
 
     for event in events:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            handle_mouse_clicks(event)
         if event.type == pygame.QUIT:
             running = False
-   
-    # effectively clear the screen 
-    screen.fill("white") 
-    # draw entities onto the screen
-    board.draw_board(screen)
+        screen_manager.handle_event(event)
 
+    screen_manager.update_and_draw()
 
-    enemy_loop()
-    tower_loop()
-    player_loop()
-    
-    for drawable in ui_draw_list:
-        drawable.draw(screen)
-    
     pygame.display.flip()
     clock.tick(60)  # Limit to 60 frames per second
 
@@ -127,3 +110,11 @@ while running:
 # next steps get the pathfinding for enemies working
 # player select tile and build/remove tower
 # menus for starting, ending and adjusting the game 
+# game loop idea:
+# deckbuilder roguelike tower defense
+# - Start with a basic deck of towers
+# - Each wave of enemies gives rewards to upgrade or add to the deck
+# - Players can build towers on the board using their deck
+# - Implement a shop system to buy/sell cards between waves
+# - Unlock new tower types as the player progresses
+# - Have action cards that can be played for special effects

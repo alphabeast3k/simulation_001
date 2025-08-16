@@ -23,11 +23,14 @@ class Button:
         return True
 
     def draw(self, screen):
-        # Draw the button on the screen # Scale the image to fit the button size
-        screen.blit(self.img, self.pos)
+        # Draw the active button image on the screen
+        screen.blit(self.active_img, self.pos)
         font = pygame.font.Font(None, 36)
         text_surface = font.render(self.text, True, (0, 0, 0))
-        screen.blit(text_surface, (self.pos[0] + 10, self.pos[1] + 10))
+        # Center text within the button rectangle
+        text_rect = text_surface.get_rect()
+        text_rect.center = (int(self.pos[0] + self.size[0] / 2), int(self.pos[1] + self.size[1] / 2))
+        screen.blit(text_surface, text_rect)
 
     def click(self):
         if self.action:

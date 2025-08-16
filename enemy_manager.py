@@ -17,6 +17,7 @@ class EnemyManager:
         self.base_pos: tuple[int, int] = player.get_base_pos()
         self.enemies: list[Enemy] = []
         self.board: Board = board
+        self.player: Player = player
     
     def get_spawn_points(self):
         return self.spawn_point
@@ -26,11 +27,23 @@ class EnemyManager:
         self.enemies.append(enemy)
     
     def update_enemies(self, tile_size, screen):
-        for enemy in self.enemies:        
+        # Build base tile rect once
+        base_tile = self.board.get_tile_at_index(self.base_pos)
+        base_rect = pygame.Rect(base_tile.x_pos, base_tile.y_pos, base_tile.size, base_tile.size)
+
+        for enemy in list(self.enemies):  # iterate over a copy to allow safe removal
             enemy.move(tile_size=tile_size)
             enemy.draw(screen=screen)
-            
-            if enemy.health <= 0: 
+
+            # Enemy killed by towers
+            if enemy.health <= 0:
+                self.enemies.remove(enemy)
+                continue
+
+            # Check if enemy reached base
+            if base_rect.collidepoint(enemy.pos):
+                dmg = enemy_data[enemy.enemy_type][EnemyDataKeys.damage]
+                self.player.health = max(0, self.player.health - dmg)
                 self.enemies.remove(enemy)
                 
 
